@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.Entity;
-using System.Linq;
+﻿using System.Data.Entity;
 using System.Threading.Tasks;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 using PaginationTaskDZ.Models;
+using System.Linq;
+using System.Collections.Generic;
 
 namespace PaginationTaskDZ.Controllers
 {
@@ -16,10 +13,28 @@ namespace PaginationTaskDZ.Controllers
         private PaginationContext db = new PaginationContext();
 
         // GET: Products
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int? category, int page = 1)
         {
+            int pageSize = 2; // количество объектов на страницу
             var products = db.Products.Include(p => p.Category);
-            return View(await products.ToListAsync());
+            IEnumerable<Product> productsPerPages = products.Skip((page - 1) * pageSize).Take(pageSize);
+            PageInfo pageInfo = new PageInfo { PageNumber = page, PageSize = pageSize, TotalItems = await products.CountAsync() };
+            
+            //await products.ToListAsync();
+            if (category != null && category != 0)
+            {
+                products = products.Where(p => p.CategoryId == category);
+            }
+
+            List<Category> categories = await db.Categorys.ToListAsync();
+            // устанавливаем начальный элемент, который позволит выбрать всех
+            categories.Insert(0, new Category { Description = "All Products", Id = 0 });
+
+            IndexViewModel viewmdl = new IndexViewModel();
+            viewmdl.Products = products;
+            viewmdl.Categories = new SelectList(categories, "Id", "Description");
+            viewmdl.PageInfo = pageInfo;
+            return View(viewmdl);
         }
 
         // GET: Products/Details/5
