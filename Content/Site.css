@@ -21,3 +21,11 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.control-label{
+    margin-right: 10px;
+}
+
+.form-inline {
+    margin-bottom: 15px;
+}

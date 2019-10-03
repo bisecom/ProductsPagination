@@ -8,9 +8,8 @@
 <h2>Products Catalogue</h2>
 <form method="get">
     <div class="form-inline">
-        <label class="control-label">Команда: </label>
-        @Html.DropDownList("categories", Model.Categories as SelectList,
-                    htmlAttributes: new { @class = "form-control" })
+        <label class="control-label">Category: </label>
+        @Html.DropDownList("category", Model.Categories, htmlAttributes: new { @class = "form-control" })
 
         <input type="submit" value="Filter" class="btn btn-default" />
     </div>
@@ -30,7 +29,7 @@
     {
         <tr>
             <td>
-                @Html.Display((counter++).ToString())
+                @(counter++)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Sku)
